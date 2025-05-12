@@ -1,9 +1,9 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
+import ghPages from '@astrojs/gh-pages';
 
-import react from '@astrojs/react';
-
-// https://astro.build/config
 export default defineConfig({
-  integrations: [react()]
+  output: 'static',
+  integrations: [ghPages()],
+  base: '/', // or '/your-repo-name' if it's not a user/organization page
+  site: 'https://projectojo.com', // custom domain here
 });
