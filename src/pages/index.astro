@@ -1,5 +1,44 @@
 ---
 import RevealGlobe from '../components/RevealGlobe.jsx';
+
+let arcsData = [];
+let pointsData = [];
+let entries = [];
+
+try {
+  const res = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/trafficking`);
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`[astro] Fetch failed ${res.status} ${res.statusText}:\n${errorText}`);
+  }
+
+  const json = await res.json();
+  entries = json || []; // Django returns list, not { data: [...] }
+
+  arcsData = entries
+    .filter(entry =>
+      entry?.lat_start != null &&
+      entry?.lng_start != null &&
+      entry?.lat_end != null &&
+      entry?.lng_end != null
+    )
+    .map(entry => ({
+      startLat: entry.lat_start,
+      startLng: entry.lng_start,
+      endLat: entry.lat_end,
+      endLng: entry.lng_end,
+    }));
+
+  pointsData = entries.flatMap(entry => [
+    entry.lat_start != null && entry.lng_start != null ? { lat: entry.lat_start, lng: entry.lng_start } : null,
+    entry.lat_end != null && entry.lng_end != null ? { lat: entry.lat_end, lng: entry.lng_end } : null,
+  ].filter(Boolean));
+
+  console.log('[astro] Entries fetched:', entries.length);
+} catch (err) {
+  console.error('[astro] SSR Fetch Error:', err.message);
+}
 ---
 
 <html lang="en">
@@ -11,7 +50,12 @@ import RevealGlobe from '../components/RevealGlobe.jsx';
   </head>
   <body class="bg-black text-white font-sans">
     <main class="relative w-screen h-screen overflow-hidden">
-      <RevealGlobe client:only="react" />
+    <RevealGlobe 
+      client:only="react" 
+      arcsData={arcsData} 
+      pointsData={pointsData} 
+      entries={entries} 
+    />
     </main>
   </body>
 </html>
