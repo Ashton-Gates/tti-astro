@@ -1,9 +1,7 @@
 import { defineConfig } from 'astro/config';
-import ghPages from '@astrojs/gh-pages';
 
 export default defineConfig({
   output: 'static',
-  integrations: [ghPages()],
-  base: '/', // or '/your-repo-name' if it's not a user/organization page
-  site: 'https://projectojo.com', // custom domain here
+  site: 'https://ashton-gates.github.io/tti-astro/', // ← this MUST match your GitHub Pages URL
+  base: '/tti-astro/' // ← this is the subpath for GitHub Pages
 });

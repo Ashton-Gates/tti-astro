@@ -1,12 +1,23 @@
 // src/lib/redis.js
 import { createClient } from 'redis';
 
-const client = createClient({
-  url: process.env.REDIS_URL
-});
+let client;
 
-client.on('error', (err) => console.error('Redis Client Error', err));
+export async function getRedisClient() {
+  if (!client) {
+    if (!process.env.REDIS_URL) {
+      console.warn('Missing REDIS_URL in environment');
+      return null;
+    }
 
-await client.connect();
+    client = createClient({ url: process.env.REDIS_URL });
 
-export default client;
+    client.on('error', (err) => {
+      console.error('Redis Client Error', err);
+    });
+
+    await client.connect();
+  }
+
+  return client;
+}
