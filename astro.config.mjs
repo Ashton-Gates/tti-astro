@@ -6,10 +6,10 @@ export default defineConfig({
   output: 'static',
 
   // ← this MUST match your GitHub Pages URL
-  site: 'https://ashton-gates.github.io/tti-astro/',
+  site: 'https://projectojo.com',
 
   // ← this is the subpath for GitHub Pages
-  base: '/tti-astro/',
+  base: '/',
 
   integrations: [react()]
 });
